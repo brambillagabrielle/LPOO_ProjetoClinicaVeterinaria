@@ -1,12 +1,32 @@
 package br.edu.ifsul.bcc.lpoo.cv.model;
 
-public class Produto {
+import java.io.Serializable;
+import javax.persistence.*;
 
+@Entity
+@Table(name = "tb_produto")
+public class Produto implements Serializable {
+
+    @Id
+    @SequenceGenerator(name = "seq_produto", sequenceName = "seq_produto_id", allocationSize = 1)
+    @GeneratedValue(generator = "seq_produto", strategy = GenerationType.SEQUENCE)
     private Integer id;
+    
+    @Column(nullable = false, length = 100)
     private String nome;
+    
+    @Column(nullable = false)
     private Float valor;
+    
+    @Column(nullable = false)
     private Float quantidade;
+    
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private TipoProduto tipoProduto;
+    
+    @ManyToOne
+    @JoinColumn(name = "fornecedor_pessoa_cpf", nullable = false)
     private Fornecedor fornecedor;
 
     public Produto() {

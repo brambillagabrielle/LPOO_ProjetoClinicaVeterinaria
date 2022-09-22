@@ -1,14 +1,34 @@
 package br.edu.ifsul.bcc.lpoo.cv.model;
 
+import java.io.Serializable;
 import java.util.Calendar;
+import javax.persistence.*;
 
-public class Pet {
-
+@Entity
+@Table(name = "tb_pet")
+public class Pet implements Serializable {
+    
+    @Id
+    @SequenceGenerator(name = "seq_pet", sequenceName = "seq_pet_id", allocationSize = 1)
+    @GeneratedValue(generator = "seq_pet", strategy = GenerationType.SEQUENCE)
     private Integer id;
+    
+    @Column(nullable = false, length = 100)
     private String nome;
+    
+    @Column(nullable = false)
+    @Temporal(TemporalType.TIMESTAMP)
     private Calendar dataNascimento;
+    
+    @Column(nullable = false, length = 200)
     private String observacao;
+    
+    @ManyToOne
+    @JoinColumn(name = "cliente_pessoa_cpf", nullable = false)
     private Cliente cliente;
+    
+    @ManyToOne
+    @JoinColumn(name = "raca_id", nullable = false)
     private Raca raca;
 
     public Pet() {

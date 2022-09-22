@@ -1,13 +1,24 @@
 package br.edu.ifsul.bcc.lpoo.cv.model;
 
+import javax.persistence.*;
+
+@Entity
+@Table(name = "tb_funcionario")
+@DiscriminatorValue("U")
 public class Funcionario extends Pessoa {
 
+    @Column(nullable = false, length = 14)
     private String ctps;
+    
+    @Column(nullable = false, length = 10)
     private String pis;
+    
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private Cargo cargo;
 
     public Funcionario() {
-        
+        this.setTipo("U");
     }
 
     public String getCtps() {

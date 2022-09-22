@@ -1,16 +1,45 @@
 package br.edu.ifsul.bcc.lpoo.cv.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import javax.persistence.*;
 
-public class Procedimento {
-
+@Entity
+@Table(name = "tb_procedimento")
+public class Procedimento implements Serializable {
+    
+    @Id
+    @SequenceGenerator(name = "seq_procedimento", sequenceName = "seq_procedimento_id", allocationSize = 1)
+    @GeneratedValue(generator = "seq_procedimento", strategy = GenerationType.SEQUENCE)
     private Integer id;
+    
+    @Column(nullable = false, length = 200)
     private String observacao;
+    
+    @Column(nullable = false)
     private Float valor;
+    
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private Status status;
+    
+    @ManyToOne
+    @JoinColumn(name = "agenda_id", nullable = false)
     private Agenda agenda;
+    
+    @ManyToOne
+    @JoinColumn(name = "pet_id", nullable = false)
     private Pet pet;
+    
+    @ManyToMany
+    @JoinTable(name = "tb_procedimento_produto",
+            joinColumns = {
+                @JoinColumn(name = "procedimento_id")
+            },
+            inverseJoinColumns = {
+                @JoinColumn(name = "produto_id")
+            })
     private List<Produto> produtos;
 
     public Procedimento() {

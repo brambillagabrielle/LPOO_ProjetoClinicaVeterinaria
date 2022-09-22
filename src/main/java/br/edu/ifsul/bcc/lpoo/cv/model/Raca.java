@@ -1,9 +1,22 @@
 package br.edu.ifsul.bcc.lpoo.cv.model;
 
-public class Raca {
+import java.io.Serializable;
+import javax.persistence.*;
 
+@Entity
+@Table(name = "tb_raca")
+public class Raca implements Serializable {
+    
+    @Id
+    @SequenceGenerator(name = "seq_raca", sequenceName = "seq_raca_id", allocationSize = 1)
+    @GeneratedValue(generator = "seq_raca", strategy = GenerationType.SEQUENCE)
     private Integer id;
+    
+    @Column(nullable = false, length = 100)
     private String nome;
+    
+    @ManyToOne
+    @JoinColumn(name = "especie_id", nullable = false)
     private Especie especie;
 
     public Raca() {

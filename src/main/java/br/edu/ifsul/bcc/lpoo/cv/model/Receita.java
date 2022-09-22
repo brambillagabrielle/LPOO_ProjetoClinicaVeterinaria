@@ -1,13 +1,34 @@
 package br.edu.ifsul.bcc.lpoo.cv.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import javax.persistence.*;
 
-public class Receita {
-
+@Entity
+@Table(name = "tb_receita")
+public class Receita implements Serializable {
+    
+    @Id
+    @SequenceGenerator(name = "seq_receita", sequenceName = "seq_receita_id", allocationSize = 1)
+    @GeneratedValue(generator = "seq_receita", strategy = GenerationType.SEQUENCE)
     private Integer id;
+    
+    @Column(nullable = false, length = 200)
     private String orientacao;
+    
+    @ManyToOne
+    @JoinColumn(name = "consulta_id", nullable = false)
     private Consulta consulta;
+    
+    @ManyToMany
+    @JoinTable(name = "tb_receita_produto",
+            joinColumns = {
+                @JoinColumn(name = "receita_id")
+            },
+            inverseJoinColumns = {
+                @JoinColumn(name = "produto_id")
+            })
     private List<Produto> produtos;
 
     public Receita() {

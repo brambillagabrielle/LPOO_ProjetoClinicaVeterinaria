@@ -1,19 +1,60 @@
 package br.edu.ifsul.bcc.lpoo.cv.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import javax.persistence.*;
 
-public class Venda {
-
+@Entity
+@Table(name = "tb_venda")
+public class Venda implements Serializable {
+    
+    @Id
+    @SequenceGenerator(name = "seq_venda", sequenceName = "seq_venda_id", allocationSize = 1)
+    @GeneratedValue(generator = "seq_venda", strategy = GenerationType.SEQUENCE)
     private Integer id;
+    
+    @Column(nullable = false, length = 200)
     private String observacao;
+    
+    @Column(nullable = false)
     private Float valorTotal;
+    
+    @Column(nullable = false)
+    @Temporal(TemporalType.TIMESTAMP)
     private Calendar data;
+    
+    @ManyToOne
+    @JoinColumn(name = "funcionario_pessoa_cpf", nullable = false)
     private Funcionario funcionario;
+    
+    @ManyToOne
+    @JoinColumn(name = "cliente_pessoa_cpf", nullable = false)
     private Cliente cliente;
-    private Pagamento pagamento;
+    
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private Pagamento formaPagamento;
+    
+    @ManyToMany
+    @JoinTable(name = "tb_venda_consulta",
+            joinColumns = {
+                @JoinColumn(name = "venda_id")
+            },
+            inverseJoinColumns = {
+                @JoinColumn(name = "consulta_id")
+            })
     private List<Consulta> consultas;
+    
+    @ManyToMany
+    @JoinTable(name = "tb_venda_produto",
+            joinColumns = {
+                @JoinColumn(name = "venda_id")
+            },
+            inverseJoinColumns = {
+                @JoinColumn(name = "produto_id")
+            })
     private List<Produto> produtos;
 
     public Venda() {
@@ -69,12 +110,12 @@ public class Venda {
         this.cliente = cliente;
     }
 
-    public Pagamento getPagamento() {
-        return pagamento;
+    public Pagamento getFormaPagamento() {
+        return formaPagamento;
     }
 
-    public void setPagamento(Pagamento pagamento) {
-        this.pagamento = pagamento;
+    public void setFormaPagamento(Pagamento formaPagamento) {
+        this.formaPagamento = formaPagamento;
     }
 
     public List<Consulta> getConsultas() {

@@ -1,19 +1,52 @@
 package br.edu.ifsul.bcc.lpoo.cv.model;
 
+import java.io.Serializable;
 import java.util.Calendar;
+import javax.persistence.*;
 
-public abstract class Pessoa {
-
+@Entity
+@Table(name = "tb_pessoa")
+@Inheritance(strategy = InheritanceType.JOINED)
+@DiscriminatorColumn(name = "tipo")
+public abstract class Pessoa implements Serializable {
+    
+    @Id
     private String cpf;
+    
+    @Column(nullable = false, length = 10)
     private String rg;
+    
+    @Column(nullable = false, length = 100)
     private String nome;
+    
+    @Column(nullable = false, length = 50)
     private String senha;
+    
+    @Column(nullable = false, length = 11)
     private String numeroCelular;
+    
+    @Column(nullable = false, length = 100)
     private String email;
+    
+    @Column(nullable = false)
+    @Temporal(TemporalType.TIMESTAMP)
+    private Calendar dataCadastro;
+    
+    @Column(nullable = false)
+    @Temporal(TemporalType.TIMESTAMP)
     private Calendar dataNascimento;
+    
+    @Column(nullable = false, length = 8)
     private String cep;
+    
+    @Column(nullable = false, length = 100)
     private String endereco;
+    
+    @Column(nullable = false, length = 100)
     private String complemento;
+    
+    @Transient
+    private String tipo;
 
     public Pessoa() {
 
@@ -67,6 +100,14 @@ public abstract class Pessoa {
         this.email = email;
     }
 
+    public Calendar getDataCadastro() {
+        return dataCadastro;
+    }
+
+    public void setDataCadastro(Calendar dataCadastro) {
+        this.dataCadastro = dataCadastro;
+    }
+
     public Calendar getDataNascimento() {
         return dataNascimento;
     }
@@ -97,6 +138,14 @@ public abstract class Pessoa {
     
     public void setComplemento(String complemento) {
         this.complemento = complemento;
+    }
+
+    public String getTipo() {
+        return tipo;
+    }
+
+    public void setTipo(String tipo) {
+        this.tipo = tipo;
     }
     
 }

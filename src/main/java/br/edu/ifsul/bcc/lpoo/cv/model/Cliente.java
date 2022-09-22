@@ -3,22 +3,31 @@ package br.edu.ifsul.bcc.lpoo.cv.model;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import javax.persistence.*;
 
+@Entity
+@Table(name = "tb_cliente")
+@DiscriminatorValue("C")
 public class Cliente extends Pessoa {
-
-    private Calendar data_ultima_visita;
+    
+    @Column(nullable = false)
+    @Temporal(TemporalType.TIMESTAMP)
+    private Calendar dataUltimaVisita;
+    
+    @OneToMany(mappedBy = "cliente")
     private List<Pet> pets;
 
     public Cliente() {
+        this.setTipo("C");
         pets = new ArrayList();
     }
 
-    public Calendar getData_ultima_visita() {
-        return data_ultima_visita;
+    public Calendar getDataUltimaVisita() {
+        return dataUltimaVisita;
     }
 
-    public void setData_ultima_visita(Calendar data_ultima_visita) {
-        this.data_ultima_visita = data_ultima_visita;
+    public void setDataUltimaVisita(Calendar dataUltimaVisita) {
+        this.dataUltimaVisita = dataUltimaVisita;
     }
 
     public List<Pet> getPets() {

@@ -1,18 +1,43 @@
 package br.edu.ifsul.bcc.lpoo.cv.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import javax.persistence.*;
 
-public class Consulta {
-
+@Entity
+@Table(name = "tb_consulta")
+public class Consulta implements Serializable {
+    
+    @Id
+    @SequenceGenerator(name = "seq_consulta", sequenceName = "seq_consulta_id", allocationSize = 1)
+    @GeneratedValue(generator = "seq_consulta", strategy = GenerationType.SEQUENCE)
     private Integer id;
+    
+    @Column(nullable = false)
+    @Temporal(TemporalType.TIMESTAMP)
     private Calendar data;
+    
+    @Column(nullable = false, length = 200)
     private String observacao;
+    
+    @Column(nullable = false)
+    @Temporal(TemporalType.TIMESTAMP)
     private Calendar dataRetorno;
+    
+    @Column(nullable = false)
     private Float valor;
+    
+    @ManyToOne
+    @JoinColumn(name = "medico_pessoa_cpf", nullable = false)
     private Medico medico;
+    
+    @ManyToOne
+    @JoinColumn(name = "pet_id", nullable = false)
     private Pet pet;
+    
+    @OneToMany(mappedBy = "consulta")
     private List<Receita> receitas;
 
     public Consulta() {
