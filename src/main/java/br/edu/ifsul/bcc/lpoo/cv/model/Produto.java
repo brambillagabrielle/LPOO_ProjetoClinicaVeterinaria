@@ -5,6 +5,14 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "tb_produto")
+@NamedQueries(
+    {
+        @NamedQuery(
+            name = "Produto.orderbyid", 
+            query = "SELECT p FROM Produto p ORDER BY p.id ASC"
+        )
+    }
+)
 public class Produto implements Serializable {
 
     @Id
@@ -19,7 +27,7 @@ public class Produto implements Serializable {
     private Float valor;
     
     @Column(nullable = false)
-    private Float quantidade;
+    private Integer quantidade;
     
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
@@ -57,11 +65,11 @@ public class Produto implements Serializable {
         this.valor = valor;
     }
 
-    public Float getQuantidade() {
+    public Integer getQuantidade() {
         return quantidade;
     }
 
-    public void setQuantidade(Float quantidade) {
+    public void setQuantidade(Integer quantidade) {
         this.quantidade = quantidade;
     }
 

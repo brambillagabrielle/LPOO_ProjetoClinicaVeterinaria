@@ -7,6 +7,14 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "tb_receita")
+@NamedQueries(
+    {
+        @NamedQuery(
+            name = "Receita.orderbyid", 
+            query = "SELECT r FROM Receita r ORDER BY r.id ASC"
+        )
+    }
+)
 public class Receita implements Serializable {
     
     @Id

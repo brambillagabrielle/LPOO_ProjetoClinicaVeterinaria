@@ -5,6 +5,14 @@ import javax.persistence.*;
 @Entity
 @Table(name = "tb_fornecedor")
 @DiscriminatorValue("F")
+@NamedQueries(
+    {
+        @NamedQuery(
+            name = "Fornecedor.orderbynome", 
+            query = "SELECT f FROM Fornecedor f ORDER BY f.nome ASC"
+        )
+    }
+)
 public class Fornecedor extends Pessoa {
     
     @Column(nullable = false, length = 14)

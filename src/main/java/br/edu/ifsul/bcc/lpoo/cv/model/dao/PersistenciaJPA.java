@@ -1,6 +1,6 @@
 package br.edu.ifsul.bcc.lpoo.cv.model.dao;
 
-import br.edu.ifsul.bcc.lpoo.cv.model.Produto;
+import br.edu.ifsul.bcc.lpoo.cv.model.*;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -59,7 +59,25 @@ public class PersistenciaJPA implements InterfacePersistencia {
 
     public List<Produto> listProdutos() throws Exception {
         
-        throw new UnsupportedOperationException("Not supported yet.");
+        return entity.createNamedQuery("Produto.orderbyid").getResultList();
+        
+    }
+    
+    public List<Fornecedor> listFornecedores() throws Exception {
+        
+        return entity.createNamedQuery("Fornecedor.orderbynome").getResultList();
+        
+    }
+    
+    public List<Receita> listReceita() throws Exception {
+        
+        return entity.createNamedQuery("Receita.orderbyid").getResultList();
+        
+    }
+    
+    public List<Procedimento> listProcedimento() throws Exception {
+        
+        throw new UnsupportedOperationException("NÃO IMPLEMENTADO AINDA!");
         
     }
     
