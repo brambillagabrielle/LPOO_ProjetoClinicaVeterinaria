@@ -57,25 +57,29 @@ public class PersistenciaJPA implements InterfacePersistencia {
         
     }
 
+    @Override
     public List<Produto> listProdutos() throws Exception {
         
         return entity.createNamedQuery("Produto.orderbyid").getResultList();
         
     }
     
+    @Override
     public List<Fornecedor> listFornecedores() throws Exception {
         
         return entity.createNamedQuery("Fornecedor.orderbynome").getResultList();
         
     }
     
-    public List<Receita> listReceita() throws Exception {
+    @Override
+    public List<Receita> listReceitas() throws Exception {
         
         return entity.createNamedQuery("Receita.orderbyid").getResultList();
         
     }
     
-    public List<Procedimento> listProcedimento() throws Exception {
+    @Override
+    public List<Procedimento> listProcedimentos() throws Exception {
         
         throw new UnsupportedOperationException("NÃO IMPLEMENTADO AINDA!");
         
