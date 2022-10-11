@@ -6,6 +6,10 @@ import java.util.Calendar;
 import java.util.List;
 import javax.persistence.*;
 
+/*
+    Consulta  é composta por Receitas
+*/
+
 @Entity
 @Table(name = "tb_consulta")
 public class Consulta implements Serializable {
@@ -37,6 +41,7 @@ public class Consulta implements Serializable {
     @JoinColumn(name = "pet_id", nullable = false)
     private Pet pet;
     
+    // o que a classe que contém a composição tem
     @OneToMany(mappedBy = "consulta")
     private List<Receita> receitas;
 

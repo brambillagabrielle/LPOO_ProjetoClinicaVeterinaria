@@ -3,6 +3,7 @@ package br.edu.ifsul.bcc.lpoo.cv.model.dao;
 import br.edu.ifsul.bcc.lpoo.cv.model.*;
 import java.util.List;
 
+// interface em comum para a criação de métodos para os 2 tipos de persistência
 public interface InterfacePersistencia {
     
     public Boolean conexaoAberta();
@@ -21,6 +22,4 @@ public interface InterfacePersistencia {
     
     public List<Receita> listReceitas() throws Exception;
     
-    public List<Procedimento> listProcedimentos() throws Exception;
-
 }

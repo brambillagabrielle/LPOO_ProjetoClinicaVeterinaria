@@ -10,6 +10,11 @@ import org.junit.Test;
 
 public class TestPersistenciaJPA {
     
+    // testes unitários levam a anotação @Test para executar
+    /*
+    esse teste vai criar as tabelas no banco (depois da primeira vez
+    muda a estretégia de geração de tabela
+    */
     // @Test
     public void testConexaoJPA() {
         
@@ -26,6 +31,7 @@ public class TestPersistenciaJPA {
         
     }
     
+    // faz o teste da consulta nomeada
     // @Test
     public void testListProduto() throws Exception {
         
@@ -51,6 +57,7 @@ public class TestPersistenciaJPA {
         
     }
     
+    // realiza o CRUD completo com a tabela produto
     // @Test
     public void testPersistenciaProduto() throws Exception {
         
@@ -95,6 +102,7 @@ public class TestPersistenciaJPA {
         
     }
     
+    // estratégia para poder criar registros em tabelas que contenham associações
     private Fornecedor getFornecedor(PersistenciaJPA jpa) throws Exception {
         
         if(jpa.conexaoAberta()) {

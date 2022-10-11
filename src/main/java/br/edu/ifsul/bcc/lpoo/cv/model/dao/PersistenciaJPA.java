@@ -7,6 +7,8 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
 public class PersistenciaJPA implements InterfacePersistencia {
+    
+    // precisa criar uma EntityManager para fazer as operações no banco
 
     public EntityManagerFactory factory;
     public EntityManager entity;
@@ -56,10 +58,12 @@ public class PersistenciaJPA implements InterfacePersistencia {
         entity.getTransaction().commit();
         
     }
-
+    
+    // consulta nomeada
     @Override
     public List<Produto> listProdutos() throws Exception {
         
+        // cria o nome da consulta, que tem a query na classe correspondente
         return entity.createNamedQuery("Produto.orderbyid").getResultList();
         
     }
@@ -75,13 +79,6 @@ public class PersistenciaJPA implements InterfacePersistencia {
     public List<Receita> listReceitas() throws Exception {
         
         return entity.createNamedQuery("Receita.orderbyid").getResultList();
-        
-    }
-    
-    @Override
-    public List<Procedimento> listProcedimentos() throws Exception {
-        
-        throw new UnsupportedOperationException("NÃO IMPLEMENTADO AINDA!");
         
     }
     

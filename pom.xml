@@ -13,6 +13,9 @@
     </properties>
     
     <dependencies>
+        
+        <!-- precisa alterar as dependências para ter todas -->
+    
         <dependency>
             <groupId>org.hibernate.javax.persistence</groupId>
             <artifactId>hibernate-jpa-2.1-api</artifactId>

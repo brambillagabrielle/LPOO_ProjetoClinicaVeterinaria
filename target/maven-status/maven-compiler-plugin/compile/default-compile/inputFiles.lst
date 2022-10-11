@@ -18,3 +18,4 @@
 /home/gabrielle/NetBeansProjects/ProjetoClinicaVeterinaria/src/main/java/br/edu/ifsul/bcc/lpoo/cv/model/Pagamento.java
 /home/gabrielle/NetBeansProjects/ProjetoClinicaVeterinaria/src/main/java/br/edu/ifsul/bcc/lpoo/cv/model/Procedimento.java
 /home/gabrielle/NetBeansProjects/ProjetoClinicaVeterinaria/src/main/java/br/edu/ifsul/bcc/lpoo/cv/model/dao/InterfacePersistencia.java
+/home/gabrielle/NetBeansProjects/ProjetoClinicaVeterinaria/src/main/java/br/edu/ifsul/bcc/lpoo/cv/model/dao/PersistenciaJDBC.java

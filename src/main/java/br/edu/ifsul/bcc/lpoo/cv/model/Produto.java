@@ -3,8 +3,14 @@ package br.edu.ifsul.bcc.lpoo.cv.model;
 import java.io.Serializable;
 import javax.persistence.*;
 
+/*
+    Produto é agregado em Receita
+*/
+
 @Entity
 @Table(name = "tb_produto")
+
+// implementação que deve ser feita na classe que vai ser realizada a consulta nomeada
 @NamedQueries(
     {
         @NamedQuery(
