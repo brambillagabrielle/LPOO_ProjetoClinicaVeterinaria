@@ -71,9 +71,10 @@ public class PersistenciaJDBC implements InterfacePersistencia {
         // a persistência precisa ser feita para cada classe separadamente        
         if (o instanceof Produto) {
             
+            // precisa transformar objeto para classe
             Produto p = (Produto) o;
             
-            if (p.getId() == null) {
+            if (p.getId() == null) { // caso o objeto passado não tenha id (não foi inserido na tabela -> INSERT)
                 
                 // prepara uma query para inserir na tabela
                 PreparedStatement ps = this.con.prepareStatement(
@@ -88,15 +89,19 @@ public class PersistenciaJDBC implements InterfacePersistencia {
                 ps.setString(4, p.getTipoProduto().name());
                 ps.setString(5, p.getFornecedor().getCpf());
                 
-                // a query é executada e o id é resgatado para poder ser visualizado
+                /*
+                se precisa retornar um valor, usa ResultSet ps.executeQuery, caso não precise apenas ps.execute
+                */
+                
+                // a query é executada e o id é resgatado para poder ser visualizado com o ResultSet
                 ResultSet rs = ps.executeQuery();
                 if (rs.next()) {
                     p.setId(rs.getInt("id"));
                 }
                 
-            } else {
+            } else { // executado quando o produto passado possui um id (foi inserida na tabela ainda -> UPDATE)
                 
-                // prepara uma query para dar um update, funcionando na mesma lógica
+                // prepara uma query para dar um update, funcionando na mesma lógica que insert
                 PreparedStatement ps = this.con.prepareStatement(
                         "UPDATE tb_produto SET nome = ?, valor = ?, quantidade = ?, tipoproduto = ?, fornecedor_pessoa_cpf = ?"
                         + " WHERE id = ?;"
@@ -106,6 +111,8 @@ public class PersistenciaJDBC implements InterfacePersistencia {
                 ps.setFloat(2, p.getValor());
                 ps.setInt(3, p.getQuantidade());
                 ps.setString(4, p.getTipoProduto().name());
+                
+                // insere uma chave estrageira na tabela
                 ps.setString(5, p.getFornecedor().getCpf());
                 ps.setInt(6, p.getId());
                 
@@ -114,6 +121,93 @@ public class PersistenciaJDBC implements InterfacePersistencia {
             }
             
         } else if (o instanceof Fornecedor) {
+            
+        } else if (o instanceof Receita) {
+            
+            Receita r = (Receita) o;
+            
+            if (r.getId() == null) { // caso não exista na tabela de receita
+                
+                PreparedStatement ps = this.con.prepareStatement(
+                        "INSERT INTO tb_receita (id, orientacao, consulta_id)"
+                                + " VALUES (NEXTVAL('seq_receita_id'), ?, ?) RETURNING id"
+                );
+                
+                ps.setString(1, r.getOrientacao());
+                ps.setInt(2, r.getConsulta().getId());
+                
+                ResultSet rs = ps.executeQuery();
+                if (rs.next()) {
+                    r.setId(rs.getInt("id"));
+                }
+                
+                // caso de AGREGAÇÃO
+                // para produtos, que estão agregados em receita:
+                
+                // caso produtos tenham sido passados junto com a receita, precisam ser inseridos
+                if (r.getProdutos() != null && !r.getProdutos().isEmpty()) {
+                    
+                    for (Produto p : r.getProdutos()) {
+                        
+                        PreparedStatement ps2 = this.con.prepareStatement(
+                                "INSERT INTO tb_receita_produto(receita_id, produto_id"
+                                        + " VALUES (?, ?)"
+                        );
+                        
+                        // sem chave primária na tabela, serão as duas chaves estrangeiras das tabelas da relação
+                        ps2.setInt(1, r.getId());
+                        ps2.setInt(2, p.getId());
+                        
+                        ps2.execute();
+                        ps2.close();
+                        
+                    }
+                    
+                }
+                
+            } else { // caso exista na tabela de receita
+                
+                PreparedStatement ps = this.con.prepareStatement(
+                        "UPDATE tb_receita SET orientacao = ?, consulta_id = ?"
+                                + " WHERE id = ?"
+                );
+                
+                ps.setString(1, r.getOrientacao());
+                ps.setInt(2, r.getConsulta().getId());
+                ps.setInt(3, r.getId());
+                
+                ps.execute();
+                
+                // no update, vai ser deletado as linhas da tabela associativa para depois inserir novamente de forma atualizada
+                
+                PreparedStatement ps2 = this.con.prepareStatement(
+                        "DELETE FROM tb_receita_produto WHERE receita_id = ?"
+                );
+                
+                ps2.setInt(1, r.getId());
+                
+                ps2.execute();
+                
+                if (r.getProdutos() != null && !r.getProdutos().isEmpty()) {
+                    
+                    for (Produto p : r.getProdutos()) {
+                        
+                        PreparedStatement ps3 = this.con.prepareStatement(
+                                "INSERT INTO tb_receita_produto(receita_id, produto_id"
+                                        + " VALUES (?, ?)"
+                        );
+                        
+                        ps2.setInt(1, r.getId());
+                        ps2.setInt(2, p.getId());
+                        
+                        ps2.execute();
+                        ps2.close();
+                        
+                    }
+                
+                }
+                
+            }
             
         }
         
@@ -485,8 +579,65 @@ public class PersistenciaJDBC implements InterfacePersistencia {
     @Override
     public List<Receita> listReceitas() throws Exception {
         
-        System.out.println("AINDA NÃO IMPLEMENTADO!");
-        return null;
+        List<Receita> lista = null;
+        
+        // une com a tabela de consulta para recuperar os dados daquela, já que está associada com receita
+        PreparedStatement ps = this.con.prepareStatement(
+                "SELECT r.id, r.orientacao, r.consulta_id"
+                        + " FROM tb_receita r, tb_consulta c"
+                        + " WHERE r.consulta_id = c.id"
+        );
+        
+        ResultSet rs = ps.executeQuery();
+        
+        lista = new ArrayList();
+        
+        // enquanto houver registros para serem recuperados na tabela, r vai receber os atributos segundo o select feito
+        while(rs.next()) {
+            
+            Receita r = new Receita();
+            
+            r.setId(rs.getInt("id"));
+            r.setOrientacao(rs.getString("orientacao"));
+            
+            Consulta c = new Consulta();
+            
+            c.setId(rs.getInt("consulta_id"));
+            r.setConsulta(c);
+            
+            // para a AGREGAÇÃO de produtos em receita:
+            
+            PreparedStatement ps2 = this.con.prepareStatement(
+                    "SELECT p.id, p.nome FROM tb_produto p, tb_receita_produto rp "
+                            + " WHERE p.id = rp.produto_id AND rp.receita_id = ? ORDER BY rp.produto_id ASC"
+            );
+            
+            ps2.setInt(1, r.getId());
+            
+            ResultSet rs2 = ps.executeQuery();
+            
+            while(rs2.next()) {
+                
+                Produto p = new Produto();
+                p.setId(rs.getInt("id"));
+                p.setNome(rs.getString("nome"));
+                
+                r.setProduto(p);
+                
+            }
+            
+            // antes de fechar, vai executar várias vezes o while
+            rs2.close();
+            ps2.close();
+            
+            lista.add(r);
+            
+        }
+        
+        rs.close();
+        ps.close();
+        
+        return lista;
         
     }
     

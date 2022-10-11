@@ -1,7 +1,9 @@
 package br.edu.ifsul.bcc.lpoo.cv.test;
 
+import br.edu.ifsul.bcc.lpoo.cv.model.Consulta;
 import br.edu.ifsul.bcc.lpoo.cv.model.Fornecedor;
 import br.edu.ifsul.bcc.lpoo.cv.model.Produto;
+import br.edu.ifsul.bcc.lpoo.cv.model.Receita;
 import br.edu.ifsul.bcc.lpoo.cv.model.TipoProduto;
 import br.edu.ifsul.bcc.lpoo.cv.model.dao.PersistenciaJDBC;
 import java.util.Calendar;
@@ -67,6 +69,7 @@ public class TestPersistenciaJDBC {
                 p.setValor(30.00F);
                 p.setQuantidade(10);
                 p.setTipoProduto(TipoProduto.MEDICAMENTO);
+                // método get para casos de ASSOCIAÇÃO
                 p.setFornecedor(getFornecedor(jdbc));
                 
                 jdbc.persist(p);
@@ -129,6 +132,43 @@ public class TestPersistenciaJDBC {
         }
         
         return null;
+        
+    }
+    
+    @Test
+    public void testPersistenciaReceita() throws Exception {
+        
+        PersistenciaJDBC jdbc = new PersistenciaJDBC();
+        
+        if (jdbc.conexaoAberta()) {
+            
+            // recupera através do método list os registros na tabela receita
+            List<Receita> lista = jdbc.listReceitas();
+            
+            if(lista.isEmpty()) {
+                
+                Receita r = new Receita();
+                r.setOrientacao("Receita teste");
+                //r.setConsulta(getConsulta(jdbc);
+                r.setProdutos(jdbc.listProdutos());
+                
+                jdbc.persist(r);
+                System.out.println("Receita inserida: " + r.getId()); // pode mostrar o id pois foi retornado na operação
+                
+            } else {
+                
+                for (Receita r : lista)
+                    jdbc.remover(r);
+                
+                System.out.println("Removeu todos os registros de Receita existentes!");
+                
+            }
+            
+            jdbc.fecharConexao();
+            
+        } else {
+            System.out.println("Falha ao estabelecer a conexão!");
+        }
         
     }
     
