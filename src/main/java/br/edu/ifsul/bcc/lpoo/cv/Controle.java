@@ -1,6 +1,9 @@
 package br.edu.ifsul.bcc.lpoo.cv;
 
 import br.edu.ifsul.bcc.lpoo.cv.gui.JFramePrincipal;
+import br.edu.ifsul.bcc.lpoo.cv.gui.JMenuBarHome;
+import br.edu.ifsul.bcc.lpoo.cv.gui.JPanelHome;
+import br.edu.ifsul.bcc.lpoo.cv.gui.funcionario.JPanelAFuncionario;
 import br.edu.ifsul.bcc.lpoo.cv.gui.autenticacao.JPanelAutenticacao;
 import br.edu.ifsul.bcc.lpoo.cv.model.Funcionario;
 import br.edu.ifsul.bcc.lpoo.cv.model.dao.PersistenciaJDBC;
@@ -11,6 +14,9 @@ public class Controle {
     private PersistenciaJDBC conexaoJDBC;
     private JFramePrincipal frame;
     private JPanelAutenticacao telaAutenticacao;
+    private JMenuBarHome menuBar;
+    private JPanelAFuncionario telaFuncionario;
+    private JPanelHome telaHome;
     
     public Controle() {
         
@@ -40,6 +46,14 @@ public class Controle {
         frame.addTela(telaAutenticacao, "tela_autenticacao");
         frame.mostraTela("tela_autenticacao");
         
+        menuBar = new JMenuBarHome(this);
+        telaHome = new JPanelHome(this);
+        telaFuncionario = new JPanelAFuncionario(this);
+        
+        frame.addTela(telaAutenticacao, "tela_autenticacao");
+        frame.addTela(telaHome, "tela_home");
+        frame.addTela(telaFuncionario, "tela_funcionario");
+        
         frame.setVisible(true);
         
     }
@@ -54,8 +68,8 @@ public class Controle {
                 
                 JOptionPane.showMessageDialog(telaAutenticacao, "Funcionario " + f.getCpf() + " autenticado com sucesso!");
                 
-                //frame.setMenuBar(menuBar);
-                //frame.mostraTela("tela_home");
+                frame.setJMenuBar(menuBar);
+                frame.mostraTela("tela_home");
                 
             } else
                 JOptionPane.showMessageDialog(telaAutenticacao, "Dados inválidos!", "Autenticação", JOptionPane.INFORMATION_MESSAGE);
@@ -64,6 +78,17 @@ public class Controle {
             JOptionPane.showMessageDialog(telaAutenticacao, "Erro ao executar a autenticação no BD", "Autenticação", JOptionPane.ERROR_MESSAGE);
         }
             
+    }
+    
+    public void mostraTela(String nomeTela){
+        
+         if (nomeTela.equals("tela_funcionario")){
+             
+            telaFuncionario.mostrarTela("tela_funcionario_listagem");
+            frame.mostraTela(nomeTela);
+            
+         }
+         
     }
     
 }
