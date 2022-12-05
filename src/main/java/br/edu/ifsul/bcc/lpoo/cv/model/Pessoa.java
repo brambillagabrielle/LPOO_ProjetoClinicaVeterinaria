@@ -4,18 +4,10 @@ import java.io.Serializable;
 import java.util.Calendar;
 import javax.persistence.*;
 
-/*
-    Pessoa é a classe pai de Cliente
-*/
-
 @Entity
 @Table(name = "tb_pessoa")
-
-// o que conteḿ o pai da herança
 @Inheritance(strategy = InheritanceType.JOINED)
 @DiscriminatorColumn(name = "tipo")
-
-// abstract é o que uma classe abstrata tem
 public abstract class Pessoa implements Serializable {
     
     @Id
@@ -30,30 +22,29 @@ public abstract class Pessoa implements Serializable {
     @Column(nullable = false, length = 50)
     private String senha;
     
-    @Column(nullable = false, length = 11)
+    @Column(nullable = true, length = 11)
     private String numeroCelular;
     
-    @Column(nullable = false, length = 100)
+    @Column(nullable = true, length = 100)
     private String email;
     
     @Column(nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Calendar dataCadastro;
     
-    @Column(nullable = false)
+    @Column(nullable = true)
     @Temporal(TemporalType.TIMESTAMP)
     private Calendar dataNascimento;
     
-    @Column(nullable = false, length = 8)
+    @Column(nullable = true, length = 8)
     private String cep;
     
-    @Column(nullable = false, length = 100)
+    @Column(nullable = true, length = 100)
     private String endereco;
     
-    @Column(nullable = false, length = 100)
+    @Column(nullable = true, length = 100)
     private String complemento;
     
-    // o que o pai da herança tem, para ter algo que identifique qual filho é
     @Transient
     private String tipo;
 

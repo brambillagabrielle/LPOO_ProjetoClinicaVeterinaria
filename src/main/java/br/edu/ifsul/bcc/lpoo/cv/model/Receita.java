@@ -5,13 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.*;
 
-/*
-    Receita possui uma agregação de Produtos
-        - Contém uma lista de Produto
-
-    Receita compõe a classe de Consulta
-*/
-
 @Entity
 @Table(name = "tb_receita")
 @NamedQueries(
@@ -32,14 +25,10 @@ public class Receita implements Serializable {
     @Column(nullable = false, length = 200)
     private String orientacao;
     
-    // o que a classe que compõe tem
     @ManyToOne
-    
-    // contém uma chave estrageira da tabela que compõe
     @JoinColumn(name = "consulta_id", nullable = false)
     private Consulta consulta;
-    
-    // o que a classe que contém a agregação tem (vai formar uma nova tabela)
+
     @ManyToMany
     @JoinTable(name = "tb_receita_produto",
             joinColumns = {

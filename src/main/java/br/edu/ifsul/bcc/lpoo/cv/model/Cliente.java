@@ -5,16 +5,9 @@ import java.util.Calendar;
 import java.util.List;
 import javax.persistence.*;
 
-/*
-    Cliente é uma das classes filhas de Pessoa (herda)
-*/
-
 @Entity
 @Table(name = "tb_cliente")
-
-// o que contém o filho da herança
 @DiscriminatorValue("C")
-
 public class Cliente extends Pessoa {
     
     @Column(nullable = false)

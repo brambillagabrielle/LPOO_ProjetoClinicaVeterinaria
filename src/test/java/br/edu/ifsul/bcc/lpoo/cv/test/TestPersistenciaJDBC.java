@@ -1,7 +1,8 @@
 package br.edu.ifsul.bcc.lpoo.cv.test;
 
-import br.edu.ifsul.bcc.lpoo.cv.model.Consulta;
+import br.edu.ifsul.bcc.lpoo.cv.model.Cargo;
 import br.edu.ifsul.bcc.lpoo.cv.model.Fornecedor;
+import br.edu.ifsul.bcc.lpoo.cv.model.Funcionario;
 import br.edu.ifsul.bcc.lpoo.cv.model.Produto;
 import br.edu.ifsul.bcc.lpoo.cv.model.Receita;
 import br.edu.ifsul.bcc.lpoo.cv.model.TipoProduto;
@@ -69,7 +70,6 @@ public class TestPersistenciaJDBC {
                 p.setValor(30.00F);
                 p.setQuantidade(10);
                 p.setTipoProduto(TipoProduto.MEDICAMENTO);
-                // método get para casos de ASSOCIAÇÃO
                 p.setFornecedor(getFornecedor(jdbc));
                 
                 jdbc.persist(p);
@@ -172,264 +172,51 @@ public class TestPersistenciaJDBC {
         
     }
     
-    /*
-    
-    EXEMPLOS:
-    
     @Test
-    public void testPersistenciaReceita() throws Exception {
+    public void testPersistenciaFuncionario() throws Exception {
         
+        PersistenciaJDBC jdbc = new PersistenciaJDBC();
         
-        //criar um objeto do tipo PersistenciaJPA.
-        PersistenciaJDBC jpa = new PersistenciaJDBC();
-        if(jpa.conexaoAberta()){
+        if(jdbc.conexaoAberta()){
+            System.out.println("Conectou no BD via JPA...");
             
-            
-            List<Receita> lista = jpa.listReceitas();
-            if(lista.isEmpty()){
-            
-                Receita r = new Receita();
-                r.setOrientacao("teste de receita. ");
-                r.setConsulta(getConsulta(jpa));                
-                r.setProdutos(jpa.listProdutos());
+            List<Funcionario> listF = jdbc.listFuncionarios();
+            if(listF.isEmpty()){
                 
-                jpa.persist(r);
-                System.out.println("Incluiu a receita: "+ r.getId());
+                Funcionario f = new Funcionario();
+                f.setCpf("12345678910");
+                f.setSenha("1234");
+                f.setRg("123456789");
+                f.setNome("teste");
+                f.setPis("123");
+                f.setCep("12345000");
+                f.setCtps("456");
+                f.setCargo(Cargo.ATENDENTE);
                 
+                jdbc.persist(f);
+                
+                System.out.println("Cadastrou o Funcionario "+f.getCpf());
                 
             }else{
                 
-                for(Receita r : lista){
-                    jpa.remover(r);
+                for(Funcionario f : listF){
+                    
+                    System.out.println("Funcionario CPF: " + f.getCpf());
+                    f.setCargo(Cargo.ADESTRADOR);
+                    jdbc.persist(f);
+                    System.out.println("Alterou o funcionário");
+                    jdbc.remover(f);
+                    System.out.println("Removeu o funcionário");
+                    
                 }
                 
-                System.out.println("Removeu as "+lista.size()+" receitas existentes.");
-            }
+            }     
             
-            jpa.fecharConexao();
-        }else{
-            System.out.println("nao conectou no BD ...");
-                        
-        }
-        
+            jdbc.fecharConexao();
+            
+        } else
+            System.out.println("Não conectou no BD...");
         
     }
-    
-    private Consulta getConsulta( PersistenciaJDBC jpa ) throws Exception {
-        
-        //criar um objeto do tipo PersistenciaJPA.     
-        if(jpa.conexaoAberta()){
-            
-            List<Consulta> lista = jpa.listConsultas();
-            if(lista.isEmpty()){
-            
-                Consulta c = new Consulta();
-                c.setObservacao("teste de consulta");
-                c.setData(Calendar.getInstance());
-                c.setData_retorno(Calendar.getInstance());                        
-                c.setValor(0f);
-                c.setMedico(getMedico(jpa));
-                c.setPet(getPet(jpa));//implementar um metodo de teste para retornar o Pet.
-                jpa.persist(c);
-                                
-                return c;
-                
-            }else{
-                                
-               return lista.get(0);
-            }            
-            
-        }else{
-            System.out.println("nao conectou no BD ...");
-                        
-        }
-        
-        return null;
-    }
-    
-    private Fornecedor getFornecedor( PersistenciaJDBC jpa ) throws Exception {
-        //criar um objeto do tipo PersistenciaJPA.     
-        if(jpa.conexaoAberta()){
-            
-            List<Fornecedor> lista = jpa.listFornecedores();
-            if(lista.isEmpty()){
-            
-                Fornecedor f = new Fornecedor();
-                f.setNome("teste");
-                f.setCnpj("08316535000");
-                f.setIe("");
-                f.setData_cadastro(Calendar.getInstance());
-                f.setNome("Laboratório Santa Inês");
-                f.setRg("123");
-                f.setSenha("123");
-                f.setCpf("00001337788");
-                jpa.persist(f);
-                                
-                return f;
-                
-            }else{
-                                
-               return lista.get(0);
-            }            
-            
-        }else{
-            System.out.println("nao conectou no BD ...");
-                        
-        }
-        
-        return null;
-    }
-    
-    private Cliente getCliente( PersistenciaJDBC jpa ) throws Exception {
-        //criar um objeto do tipo PersistenciaJPA.     
-        if(jpa.conexaoAberta()){
-            
-            List<Cliente> lista = jpa.listClientes();
-            if(lista.isEmpty()){
-            
-                Cliente c = new Cliente();
-                c.setNome("teste");
-                
-                c.setData_ultima_visita(Calendar.getInstance());
-                c.setNome("Cliente");
-                c.setRg("123");
-                c.setSenha("123");
-                c.setCpf("00001337785");
-                jpa.persist(c);
-                                
-                return c;
-                
-            }else{
-                                
-               return lista.get(0);
-            }            
-            
-        }else{
-            System.out.println("nao conectou no BD ...");
-                        
-        }
-        
-        return null;
-    }
-        
-    private Medico getMedico( PersistenciaJDBC jpa ) throws Exception {
-        
-        //criar um objeto do tipo PersistenciaJPA.     
-        if(jpa.conexaoAberta()){
-            
-            List<Medico> lista = jpa.listMedicos();
-            if(lista.isEmpty()){
-            
-                Medico m = new Medico();
-                m.setNome("teste de teste");                
-                m.setNumero_crmv("123546");
-                m.setRg("123");
-                m.setSenha("123");
-                m.setCpf("00001337733");
-                jpa.persist(m);
-                                
-                return m;
-                
-            }else{
-                                
-               return lista.get(0);
-            }            
-            
-        }else{
-            System.out.println("nao conectou no BD ...");
-                        
-        }
-        
-        return null;
-    }
-    
-    private Pet getPet( PersistenciaJDBC jdbc ) throws Exception {
-        
-        //criar um objeto do tipo.     
-        if(jdbc.conexaoAberta()){
-            
-            List<Pet> lista = jdbc.listPets();
-            if(lista.isEmpty()){
-            
-                Pet p = new Pet();
-                p.setData_nascimento(Calendar.getInstance());                
-                p.setNome("Pet de Teste");
-                p.setObservacao("não consta.");
-                p.setRaca(getRaca(jdbc));
-                p.setCliente(getCliente(jdbc));
-                jdbc.persist(p);
-                                
-                return p;
-                
-            }else{
-                                
-               return lista.get(0);
-            }            
-            
-        }else{
-            System.out.println("nao conectou no BD ...");
-                        
-        }
-        
-        return null;
-    }
-    
-    private Raca getRaca( PersistenciaJDBC jdbc ) throws Exception {
-        
-        //criar um objeto do tipo.     
-        if(jdbc.conexaoAberta()){
-            
-            List<Raca> lista = jdbc.listRacas();
-            if(lista.isEmpty()){
-            
-                Raca r = new Raca();
-                r.setNome("Raca de teste");   
-                r.setEspecie(getEspecie(jdbc));
-                jdbc.persist(r);
-                                
-                return r;
-                
-            }else{
-                                
-               return lista.get(0);
-            }            
-            
-        }else{
-            System.out.println("nao conectou no BD ...");
-                        
-        }
-        
-        return null;
-    }
-    
-    private Especie getEspecie( PersistenciaJDBC jdbc ) throws Exception {
-        
-        //criar um objeto do tipo.     
-        if(jdbc.conexaoAberta()){
-            
-            List<Especie> lista = jdbc.listEspecies();
-            if(lista.isEmpty()){
-            
-                Especie e = new Especie();
-                e.setNome("Especie de teste");   
-               
-                jdbc.persist(e);
-                                
-                return e;
-                
-            }else{
-                                
-               return lista.get(0);
-            }            
-            
-        }else{
-            System.out.println("nao conectou no BD ...");
-                        
-        }
-        
-        return null;
-    }
-    
-    */
     
 }

@@ -33,7 +33,7 @@ public class Funcionario extends Pessoa {
         return pis;
     }
 
-    public void setPis(String numeroPis) {
+    public void setPis(String pis) {
         this.pis = pis;
     }
 
